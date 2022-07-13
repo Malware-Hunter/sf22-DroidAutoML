@@ -1,0 +1,2 @@
+accuracy,precision,recall,f1_score,dataset,execution_time
+0.8791304347826087,0.881578947368421,0.6421725239616614,0.7430683918669131,resultado_sigpid_DrebinDatasetPermissoes.csv,00:01:50
