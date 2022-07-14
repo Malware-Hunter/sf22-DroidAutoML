@@ -24,7 +24,7 @@ option 12 apicalls
 
 ```
 ```python
-python3 quick.py datasets/DrebinDatasetPermissoes.csv --default
-python3 quick.py datasets/DrebinDatasetPermissoes.csv --permissions
-python3 quick.py datasets/DrebinDatasetPermissoes.csv --apicalls
+python3 quick.py -d datasets/DrebinDatasetPermissoes.csv --default
+python3 quick.py -d datasets/DrebinDatasetPermissoes.csv --permissions
+python3 quick.py -d datasets/DrebinDatasetPermissoes.csv --apicalls
 ```
