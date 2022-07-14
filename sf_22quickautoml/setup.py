@@ -8,7 +8,7 @@ setup(
     description='Quick tests for supervised machine learning entities',
     license='MIT',
     install_requires=[
-        'sklearn', 'numpy', 'pandas', 'matplotlib', 'optuna'
+        'sklearn', 'numpy', 'pandas', 'matplotlib', 'optuna','mlxtend'
     ],
     test_suite='tests'
 )
