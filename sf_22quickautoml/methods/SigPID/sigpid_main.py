@@ -174,10 +174,11 @@ def drop_internet(dataset):
     ds = dataset.drop(columns=cols)
     return ds
 
-if __name__=="__main__":
-    #def main(dataset_name):
+#if __name__=="__main__":
+def sigpid(self):
     check_dirs()
-    args = parse_args(sys.argv[1:])
+    self.d = d
+    args = self.d
     #args = parse_args(dataset_name)
     try:
         initial_dataset = get_dataset(args)

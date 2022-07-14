@@ -10,7 +10,7 @@ from quickautoml.entities import NaiveModel, FittedModel, Hyperparameter, Hyperp
 
 
 class OptunaHyperparamsOptimizer(HyperparamsOptimizer):
-  print("HyperparamsOptimizer")
+ 
   def __init__(self, scoring: str):
     super().__init__(scoring)
 
@@ -47,10 +47,6 @@ class OptunaHyperparamsOptimizer(HyperparamsOptimizer):
                          )
     study.optimize(objective, n_trials=100)
     best_model = naive_model.estimator.set_params(**study.best_params)
-    #print("Optuna")
-    print(best_model)
-    #print(naive_model.name)
-    print(study.best_value)
     return FittedModel(
       name=naive_model.name,
       cv_score=study.best_value,
@@ -74,10 +70,7 @@ class GridSearchHyperparamsOptimizer(HyperparamsOptimizer):
                                n_jobs=self.n_jobs,
                                scoring=self.scoring)
     grid_search.fit(x, y)
-    print("Grid Search")
-    print(grid_search.best_estimator_)
-    print(grid_search.best_score_)
-    print(grid_search.best_estimator_)
+
     return FittedModel(
       name=grid_search.best_estimator_.__str__(),
       cv_score=grid_search.best_score_,

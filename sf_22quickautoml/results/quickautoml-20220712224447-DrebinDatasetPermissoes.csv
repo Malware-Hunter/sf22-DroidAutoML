@@ -1,2 +1,0 @@
-accuracy,precision,recall,f1_score,dataset,execution_time
-0.8894133513149022,0.8986486486486487,0.665,0.764367816091954,DrebinDatasetPermissoes.csv,00:02:53
