@@ -14,22 +14,20 @@ from methods.SigPID.spinner import Spinner
 from methods.utils import get_base_parser, get_dataset
 
 
-B = None
-M = None
-
-def parse_args(argv):
-    base_parser = get_base_parser()
-    parser = argparse.ArgumentParser(parents=[base_parser])
-    args = parser.parse_args(argv)
-    return args
+#B = None
+#M = None
 
 def S_B(j):
+    global B
+    global M
     sigmaBij = B.sum(axis = 0, skipna = True)[j]
     sizeBj = B.shape[0]
     sizeMj = M.shape[0]
     return (sigmaBij/sizeBj)*sizeMj
 
 def PRNR(j):
+    global B
+    global M
     sigmaMij = (M.sum(axis = 0, skipna = True)[j]) * 1.0
     S_Bj = S_B(j)
     r = (sigmaMij - S_Bj)/(sigmaMij + S_Bj) if sigmaMij > 0.0 and S_Bj > 0.0 else 0.0
@@ -175,10 +173,10 @@ def drop_internet(dataset):
     return ds
 
 #if __name__=="__main__":
-def sigpid(self):
+def run(args):
+    global B
+    global M
     check_dirs()
-    self.d = d
-    args = self.d
     #args = parse_args(dataset_name)
     try:
         initial_dataset = get_dataset(args)
@@ -298,6 +296,8 @@ def sigpid(self):
     num_permissions = initial_dataset.shape[1] - 1
     pct = (1.0 - (final_perms/num_permissions)) * 100.0
     print(num_permissions, "to", final_perms, "Permissions. Reduction of {:.3f}%".format(pct))
+
+    return final_dataset
 
 """
     #Testing Final Dataset
