@@ -11,6 +11,8 @@ import argparse
 from methods.RFG.rfg import *
 #from methods.SigPID.sigpid_main import *
 import methods.SigPID.sigpid_main as sigpid
+import methods.RFG.rfg as rfg
+#import quickautoml.quickautoml_test as quick
 from lib.help import *
 import subprocess
 from termcolor import colored
@@ -40,10 +42,36 @@ def parse_args(argv):
         help = 'Use a subset of n samples from the dataset. By default, all samples are used.')
     pos_opt.add_argument('-o', '--output-file', metavar = 'OUTPUT_FILE', type = str, default = 'results.csv',
         help = 'Output file name. Default: results.csv')
+        
+        
+    #RFG  
+    pos_opt.add_argument(
+        '-i', '--increment', 
+        help = 'Increment. Default: 20',
+        type = int, 
+        default = 20)
+    pos_opt.add_argument(
+        '-f',
+        metavar = 'LIST',
+        help = 'List of number of features to select. If provided, Increment is ignored. Usage example: -f="10,50,150,400"',
+        type = str, 
+        default = "")
+    pos_opt.add_argument(
+        '-k', '--n-folds',
+        help = 'Number of folds to use in k-fold cross validation. Default: 10.',
+        type = int, 
+        default = 10)
+    pos_opt.add_argument('--feature-selection-only', action='store_true',
+        help="If set, the experiment is constrained to the feature selection phase only. The program always returns the best K features, where K is the maximum value in the features list.")  
+        
     print(colored(logo, 'green'))
     parse.print_help()
     getopt = parse.parse_args(argv)
     return getopt
+
+
+
+
 
 def get_current_datetime(format="%Y%m%d%H%M%S"):
     return datetime.now().strftime(format)
@@ -72,8 +100,9 @@ if __name__ == "__main__":
 
     dataset_file_path = getopt.dataset
     dataset_name = basename(dataset_file_path)
-
+    start_time = timeit.default_timer()
     try:
+    	
         dataset_df = pd.read_csv(dataset_file_path, encoding='utf8')
     except BaseException as e:
         print('Exception: {}'.format(e))
@@ -82,13 +111,13 @@ if __name__ == "__main__":
     if getopt.use_select_features == 'permissions':
         print(colored("Applying feature selection in permissions...", 'blue'))
         dataset_df = sigpid.run(getopt)
+        #quick.run(getopt,dataset_df)
     elif getopt.use_select_features == 'api-calls':
         print(colored("Applying feature selection in API_Calls...", 'blue'))
-        #rfg()
-        #dataset_df = rfg(getopt.d, getopt)
+        dataset_df = rfg.rfg(getopt)
 
-    print(dataset_df)
-    exit(1)
+    #print(dataset_df)
+    #exit(1)
     print(colored("Selecting best algorithms and Hyperparams Optimizer...", 'blue'))
     start_time = timeit.default_timer()
     estimator = make_classifier()
@@ -115,4 +144,4 @@ if __name__ == "__main__":
         "f1_score": f1_score(y_test, predictions),
         "dataset" : dataset_name,
         "execution_time" : time_str
-    }, index=[0]).to_csv(f"./results/quickautoml-{get_current_datetime()}-{dataset_name}", index=False)
+    }, index=[0]).to_csv(f"{getopt.output_file}_quickautoml_{get_current_datetime()}_{dataset_name}", index=False)

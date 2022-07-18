@@ -7,7 +7,7 @@ from quickautoml.entities import DataPreprocessor
 
 
 class PandasDataPreprocessor(DataPreprocessor):
-  print("DataPreprocessor")
+  #print("DataPreprocessor")
   def __init__(self):
     super().__init__()
 

@@ -10,7 +10,7 @@ from quickautoml.entities import NaiveModel, FittedModel, Hyperparameter, Hyperp
 
 
 class OptunaHyperparamsOptimizer(HyperparamsOptimizer):
-  print("HyperparamsOptimizer")
+  #print("HyperparamsOptimizer")
   def __init__(self, scoring: str):
     super().__init__(scoring)
 

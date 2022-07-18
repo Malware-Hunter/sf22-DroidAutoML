@@ -1,2 +1,0 @@
-best_model,accuracy,precision,recall,f1_score,dataset,execution_time
-"RandomForestClassifier(min_samples_leaf=2, n_estimators=31)",0.8961564396493594,0.912751677852349,0.68,0.7793696275071633,DrebinDatasetPermissoes.csv,00:02:19

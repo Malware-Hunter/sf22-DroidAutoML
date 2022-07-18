@@ -95,8 +95,8 @@ def run_experiment(X, y, classifiers, is_feature_selection_only = False,
             
     return pd.DataFrame(results), best_features
 
-def rfg():    
-    parsed_args = parse_args(sys.argv[1:])
+def rfg(args):    
+    parsed_args = args
     X, y = get_X_y(parsed_args, get_dataset(parsed_args))
     k_list = [int(value) for value in parsed_args.f.split(",")] if parsed_args.f != "" else []
 
