@@ -16,15 +16,10 @@ sh distribute.sh
 ```
 
 ## Como utilizar?
-```bash
-sh run_quick.sh datasets/DrebinDatasetPermissoes.csv
-option 10 default
-option 11 permissions
-option 12 apicalls
 
-```
 ```python
-python3 quick.py -d datasets/DrebinDatasetPermissoes.csv --default
-python3 quick.py -d datasets/DrebinDatasetPermissoes.csv --permissions
-python3 quick.py -d datasets/DrebinDatasetPermissoes.csv --apicalls
+Run in SigPID:
+python3 quick.py -d datasets/DrebinDatasetPermissoes.csv --use-select-features permissions
+Run in RFG:
+python3 quick.py -d datasets/DrebinDatasetPermissoes.csv --use-select-features api-calls
 ```
