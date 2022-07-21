@@ -16,7 +16,7 @@ import methods.RFG.rfg as rfg
 from lib.help import *
 import subprocess
 from termcolor import colored
-
+import pickle
 epilog = """
 Github: https://github.com/Malware-Hunter/sf22_quickautoml
 Versão: Pré-alfa
@@ -132,6 +132,8 @@ if __name__ == "__main__":
     print(colored("Best_Model", 'blue'))
     print(colored(estimator.best_model, 'blue'))
     predictions = estimator.predict(X_test)
+    print(colored("Salve_Model", 'blue'))
+    pickle.dump(estimator, open('model.pkl', 'wb'))
     m, s = divmod(timeit.default_timer() - start_time, 60)
     h, m = divmod(m, 60)
     time_str = "%02d:%02d:%02d" % (h, m, s)
