@@ -29,12 +29,12 @@ python3 quick.py --dataset datasets/DrebinDatasetPermissoes.csv --use-select-fea
 ```bash
 Opções:
   --about               retorna informações do desenvolvedor
-  --help                exibe as opções de parametros de entrada
+  --help                exibe as opções de parâmetros de entrada
   --dataset             dataset (e.g. datasets/DrebinDatasetPermissoes.csv)
-  --use-select-features seleção de caracteristicas (e.g., permissions, api-calls, mult-features )
-                        
+  --use-select-features seleção de características (e.g., permissions, api-calls, mult-features )                       
   --sep                 separador usado no dataset por padrão ","
-  --class-column        nome da coluna que determina a clasificação do aplicativo por padrão "class"
-  --output-results      saida para o arquivo de metricas da ferramenta (e.g. acuracy, recall,time)padrão "quick_results.csv"
-  --output-model        saida para o modelo treinado e serializado formato .pkl parão "model_serializable.pkl"
+  --class-column        nome da coluna que determina a classificação do aplicativo por padrão "class"
+  --output-results      saída para o arquivo de métricas da ferramenta (e.g. acuracy, recall,time) padrão "quick_results.csv"
+  --output-model        saída para o modelo treinado e serializado formato .pkl padrão "model_serializable.pkl"
+
 ```
