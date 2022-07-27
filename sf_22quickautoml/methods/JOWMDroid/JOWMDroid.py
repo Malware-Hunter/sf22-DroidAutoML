@@ -173,19 +173,22 @@ def inspect_frame(frame):
     for i in args:
         print(f'{i} = {values[i]}')
 
-if __name__ == "__main__":
-    parsed_args = parse_args()
+#if __name__ == "__main__":
+def jowmdroid(args):    
+    parsed_args = args
+    #parsed_args = parse_args()
     X, y = get_X_y(parsed_args, get_dataset(parsed_args))
     init_size = X.shape[1]
     start_time = timeit.default_timer()
     X = select_features_with_mi(X, y, threshold=parsed_args.mi_threshold)
     end_time = timeit.default_timer()
-    print("Elapsed Time:", end_time - start_time)
+    #print("Elapsed Time:", end_time - start_time)
     if(X.shape[1] == 0):
         print("AVISO: 0 features selecionadas")
     features_dataset = X
     features_dataset['class'] = y
-    features_dataset.to_csv(f"selected-features-{parsed_args.output_file}.csv", index = False)
+    features_dataset.to_csv(f"selected-features-{parsed_args.output_jowmdroid}.csv", index = False)
+    return features_dataset
     if(parsed_args.feature_selection_only):
         print("Selected Features >>", features_dataset.shape[1]-1, "of", init_size)
         exit(0)
@@ -206,4 +209,5 @@ if __name__ == "__main__":
                             mapping_functions, cv=parsed_args.cv, train_size=parsed_args.train_size,
                             include_hyperparameter = not parsed_args.exclude_hyperparameter)
 
-    results.to_csv(parsed_args.output_file, index = False)
+    results.to_csv(parsed_args.output_jowmdroid, index = False)
+    

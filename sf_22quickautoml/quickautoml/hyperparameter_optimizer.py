@@ -7,9 +7,11 @@ from numpy import mean, ndarray
 
 from quickautoml.protocols import VerboseLevels
 from quickautoml.entities import NaiveModel, FittedModel, Hyperparameter, HyperparamsOptimizer
-
+from datetime import datetime
+import timeit
 
 class OptunaHyperparamsOptimizer(HyperparamsOptimizer):
+  
   #print("HyperparamsOptimizer")
   def __init__(self, scoring: str):
     super().__init__(scoring)
@@ -28,7 +30,7 @@ class OptunaHyperparamsOptimizer(HyperparamsOptimizer):
           model_settings: List[Hyperparameter]) -> FittedModel:
     if self.verbose == VerboseLevels.DISABLED.value:
       set_verbosity(WARNING)
-
+    start_time = timeit.default_timer() 
     def objective(trial: Trial) -> float:
       optimizations = {}
       for hyperparameter in model_settings:
@@ -51,6 +53,10 @@ class OptunaHyperparamsOptimizer(HyperparamsOptimizer):
     print(best_model)
     #print(naive_model.name)
     print(study.best_value)
+    m, s = divmod(timeit.default_timer() - start_time, 60)
+    h, m = divmod(m, 60)
+    time_str = "%02d:%02d:%02d" % (h, m, s)
+    print("Elapsed Time: ",time_str)  
     return FittedModel(
       name=naive_model.name,
       cv_score=study.best_value,

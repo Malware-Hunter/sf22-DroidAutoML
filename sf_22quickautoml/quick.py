@@ -1,4 +1,5 @@
 from quickautoml.main import make_classifier
+
 from sklearn.metrics import *
 from sklearn.model_selection import train_test_split
 import pandas as pd
@@ -8,67 +9,113 @@ import sys
 from datetime import datetime
 
 import argparse
-from methods.RFG.rfg import *
-#from methods.SigPID.sigpid_main import *
-import methods.SigPID.sigpid_main as sigpid
-import methods.RFG.rfg as rfg
-#import quickautoml.quickautoml_test as quick
+import methods.datacleaner as cleaner
+import methods.sigpid.sigpid_main as sigpid
+import methods.rfg.rfg as rfg
+import methods.jowmdroid.jowmdroid as jowmdroid
 from lib.help import *
 import subprocess
 from termcolor import colored
 import pickle
+import warnings
+warnings.filterwarnings("ignore")
+
 epilog = """
 Github: https://github.com/Malware-Hunter/sf22_quickautoml
 Versão: Pré-alfa
 """
 def parse_args(argv):
     parse = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter,
-                                    usage="python3 quick.py -d <Dataset> [opção]", add_help=False)
+                                    usage="python3 quick.py --dataset <Dataset> [opção]", add_help=False)
     pos_opt = parse.add_argument_group("Opções")
     pos_opt.add_argument("--about",action="store_true",help="Tool information")
-    pos_opt.add_argument("--usage", action="store_true", default=False, help="Show usage parameters")
-    pos_opt.add_argument("-d", "--dataset", metavar="", help="dataset (e.g. datasets/DrebinDatasetPermissoes.csv)")
+    pos_opt.add_argument("--help", action="store_true", default=False, help="Show usage parameters")
+    pos_opt.add_argument("--dataset", metavar="", help="dataset (e.g. datasets/DrebinDatasetPermissoes.csv)")
     pos_opt.add_argument(
-        '--use-select-features', metavar='FEATURE TYPE',
-        help="Run Features Selection",
-        choices=['permissions', 'api-calls'], type = str)
+        '--use-select-features', metavar='FEATURE TYPE: permissions or api-calls or jowmdroid',
+        help="--use-select-features permissions",
+        choices=['permissions', 'api-calls', 'mult-features'], type = str)
 
-    #VERIFICAR DEPOIS
+    # PADRAO PARA TODOS
     pos_opt.add_argument( '--sep', metavar = 'SEPARATOR', type = str, default = ',',
         help = 'Dataset feature separator. Default: ","')
-    pos_opt.add_argument('-c', '--class-column', type = str, default="class", metavar = 'CLASS_COLUMN',
+    pos_opt.add_argument('--class-column', type = str, default="class", metavar = 'CLASS_COLUMN',
         help = 'Name of the class column. Default: "class"')
-    pos_opt.add_argument('-n', '--n-samples', type=int,
+    pos_opt.add_argument('--n-samples', type=int,
         help = 'Use a subset of n samples from the dataset. By default, all samples are used.')
-    pos_opt.add_argument('-o', '--output-file', metavar = 'OUTPUT_FILE', type = str, default = 'results.csv',
-        help = 'Output file name. Default: results.csv')
+    pos_opt.add_argument('--output-results', metavar = 'OUTPUT_FILE', type = str, default = 'quick_results.csv',
+        help = 'Output metrics (e.g. acuracy, recall,time) Default: quick_results.csv')
+    pos_opt.add_argument('--output-model', metavar = 'OUTPUT_FILE', type = str, default = 'model_serializable',
+        help = 'Output model ML serializable. Default: model_serializable')
+        
+    
+    feature_selection_args =  any([x == 'permissions' for x in argv])
+   
+    group_sigpid = parse.add_argument_group('Additional Parameters for SigPID')
+    if feature_selection_args:
+        group_sigpid.add_argument('--output-sigpid', metavar = 'OUTPUT_FILE', type = str, default = 'subset_sigpid.csv',
+        help = 'Output file name. Default: subset_sigpid.csv')
+        
+        #mudar output-file no sigpid para output-sigpid
         
         
-    #RFG  
-    pos_opt.add_argument(
+    feature_selection_args =  any([x == 'api-calls' for x in argv])
+   
+    group_rfg = parse.add_argument_group('Additional Parameters for RFG')
+    if feature_selection_args:
+        group_rfg.add_argument('--output-rfg', metavar = 'OUTPUT_FILE', type = str, default = 'subset_rfg.csv',
+        help = 'Output file name. Default: subset_rfg.csv')
+        
+        #RFG  
+        group_rfg.add_argument(
         '-i', '--increment', 
         help = 'Increment. Default: 20',
         type = int, 
         default = 20)
-    pos_opt.add_argument(
+        group_rfg.add_argument(
         '-f',
         metavar = 'LIST',
         help = 'List of number of features to select. If provided, Increment is ignored. Usage example: -f="10,50,150,400"',
         type = str, 
         default = "")
-    pos_opt.add_argument(
+        group_rfg.add_argument(
         '-k', '--n-folds',
         help = 'Number of folds to use in k-fold cross validation. Default: 10.',
         type = int, 
         default = 10)
-    pos_opt.add_argument('--feature-selection-only', action='store_true',
+        group_rfg.add_argument('--feature-selection-only', action='store_true',
         help="If set, the experiment is constrained to the feature selection phase only. The program always returns the best K features, where K is the maximum value in the features list.")  
+ 
+ 
+ 
+    feature_selection_args =  any([x == 'mult-features' for x in argv])
+   
+    group_jowmdroid = parse.add_argument_group('Additional Parameters for JOWMDROID')
+    if feature_selection_args:
+        group_jowmdroid.add_argument('--output-jowmdroid', metavar = 'OUTPUT_FILE', type = str, default = 'subset_jowmdroid.csv',
+        help = 'Output file name. Default: subset_jowmdroid.csv')
+        group_jowmdroid.add_argument('--exclude-hyperparameter', action='store_false',
+        help="If set, the ML hyperparameter will be excluded in the Differential Evolution. By default it's included")
+        group_jowmdroid.add_argument( '-m', '--mapping-functions', metavar = 'LIST', type = str,
+        default = "power, exponential, logarithmic, hyperbolic, S_curve",
+        help = 'List of mapping functions to use. Default: "power, exponential, logarithmic, hyperbolic, S_curve"')
+        group_jowmdroid.add_argument( '-t', '--mi-threshold', type = float, default = 0.2,
+        help = 'Threshold to select features with Mutual Information. Default: 0.2. Only features with score greater than or equal to this value will be selected')
+        group_jowmdroid.add_argument('--train-size', type = float, default = 0.8,
+        help = 'Proportion of samples to use for train. Default: 0.8')
+        group_jowmdroid.add_argument('--cv', metavar = 'INT', type = int, default = 5,
+        help="Number of folds to use in cross validation. Default: 5")
+        group_jowmdroid.add_argument('--feature-selection-only', action='store_false',
+        help="If set, the experiment is constrained to the feature selection phase only.")
         
     print(colored(logo, 'green'))
-    parse.print_help()
-    getopt = parse.parse_args(argv)
+    
+    try:
+       getopt = parse.parse_args(argv)
+    except:
+        parse.print_help()
+        sys.exit(1)
     return getopt
-
 
 
 
@@ -87,53 +134,96 @@ Nota:
 ****************
 """ + epilog)
 
+def cleaner(dataset):
+    start_time = timeit.default_timer() 
+    print(colored("APPLYING DATA CLEANER...", 'blue', attrs=['bold']))
+    dataset_df = pd.read_csv(dataset, encoding='utf8')
+    print("Dataset Size: ",dataset_df.shape)
+    print("Removing irrelevant columns")
+    for col in dataset_df.columns:
+        if len(dataset_df[col].unique()) == 0:
+            dataset_df.drop(col,inplace=True,axis=1)
+        elif len(dataset_df.columns)>1:
+            dataset_df.drop(col,inplace=True,axis=1)
+
+    print("Removing duplicates values")
+    dataset_df=dataset_df.drop_duplicates(keep='first')
+    dataset_df = dataset_df.loc[:, (dataset_df > 1).any(axis=0)]
+    print("Removing NaN and Null values")
+    dataset_df.dropna(axis=1)
+    print("There is non-binary data?->",len(dataset_df.columns)>1)
+    print("There is NaN data?->",dataset_df.isna().values.any())
+    print("There is null data?->",dataset_df.isnull().values.any())
+    
+    dataset_df.shape
+    m, s = divmod(timeit.default_timer() - start_time, 60)
+    h, m = divmod(m, 60)
+    time_str = "%02d:%02d:%02d" % (h, m, s)
+    print("Elapsed Time: ",time_str)     
+    return dataset_df 
 if __name__ == "__main__":
     getopt = parse_args(sys.argv[1:])
-
+    start_time = timeit.default_timer() 
     if getopt.about:
         show_about()
         exit(1)
 
-    if getopt.usage:
-        parse.print_help()
-        exit(1)
+  
 
-    dataset_file_path = getopt.dataset
-    dataset_name = basename(dataset_file_path)
-    start_time = timeit.default_timer()
     try:
-    	
-        dataset_df = pd.read_csv(dataset_file_path, encoding='utf8')
+        
+        dataset_file_path = getopt.dataset
+        
+        dataset_name = basename(dataset_file_path)
+            	
+        dataset_df = cleaner(getopt.dataset)#pd.read_csv(dataset_file_path, encoding='utf8')
+        
+        
     except BaseException as e:
         print('Exception: {}'.format(e))
         exit(1)
 
     if getopt.use_select_features == 'permissions':
-        print(colored("Applying feature selection in permissions...", 'blue'))
+        print(colored("APPLYING FEATURE SELECTION IN PERMISSIONS...", 'blue', attrs=['bold']))
         dataset_df = sigpid.run(getopt)
-        #quick.run(getopt,dataset_df)
+        m, s = divmod(timeit.default_timer() - start_time, 60)
+        h, m = divmod(m, 60)
+        time_str = "%02d:%02d:%02d" % (h, m, s)
+        print("Elapsed Time: ",time_str)
     elif getopt.use_select_features == 'api-calls':
-        print(colored("Applying feature selection in API_Calls...", 'blue'))
+        print(colored("APPLYING FEATURE SELECTION IN API_CALLS...", 'blue', attrs=['bold']))
         dataset_df = rfg.rfg(getopt)
+        m, s = divmod(timeit.default_timer() - start_time, 60)
+        h, m = divmod(m, 60)
+        time_str = "%02d:%02d:%02d" % (h, m, s)
+        print("Elapsed Time: ",time_str)
+    elif getopt.use_select_features == 'mult-features':
+        print(colored("APPLYING FEATURE SELECTION IN JOWMDROID...", 'blue', attrs=['bold']))
+        dataset_df = jowmdroid.jowmdroid(getopt)
+        m, s = divmod(timeit.default_timer() - start_time, 60)
+        h, m = divmod(m, 60)
+        time_str = "%02d:%02d:%02d" % (h, m, s)
+        print("Elapsed Time: ",time_str)
+        
 
-    #print(dataset_df)
-    #exit(1)
-    print(colored("Selecting best algorithms and Hyperparams Optimizer...", 'blue'))
+    print(colored("SELECTING BEST ALGORITHMS AND HYPERPARAMS OPTIMIZER...", 'blue', attrs=['bold']))
     start_time = timeit.default_timer()
     estimator = make_classifier()
+    print("Dataset Size",dataset_df.shape)
     data = estimator.prepare_data(dataset_df)
 
-    y = data['class']
-    X = data.drop(['class'], axis=1)
+    y = data[getopt.class_column]
+    X = data.drop([getopt.class_column], axis=1)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
 
     estimator.fit(X_train, y_train)
-    print(colored("Best_Model", 'blue'))
-    print(colored(estimator.best_model, 'blue'))
+    print(colored("BEST MODEL", 'blue', attrs=['bold']))
+    print(estimator.best_model)
     predictions = estimator.predict(X_test)
-    print(colored("Salve_Model", 'blue'))
-    pickle.dump(estimator, open('model.pkl', 'wb'))
+    print(colored("BEST MODEL CREATED SUCCESSFULLY IN PKL FILE.", 'blue', attrs=['bold']))
+    pickle.dump(estimator, open(f"{getopt.output_model}_trained_{get_current_datetime()}_{dataset_name}.pkl", 'wb'))
+   
     m, s = divmod(timeit.default_timer() - start_time, 60)
     h, m = divmod(m, 60)
     time_str = "%02d:%02d:%02d" % (h, m, s)
@@ -146,4 +236,4 @@ if __name__ == "__main__":
         "f1_score": f1_score(y_test, predictions),
         "dataset" : dataset_name,
         "execution_time" : time_str
-    }, index=[0]).to_csv(f"{getopt.output_file}_quickautoml_{get_current_datetime()}_{dataset_name}", index=False)
+    }, index=[0]).to_csv(f"{getopt.output_results}_quickautoml_{get_current_datetime()}_{dataset_name}", index=False)

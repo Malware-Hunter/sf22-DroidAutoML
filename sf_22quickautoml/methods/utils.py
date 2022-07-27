@@ -1,6 +1,6 @@
 import argparse
 import pandas as pd
-
+from termcolor import colored
 def get_base_parser():
     """
     Retorna um ArgumentParser com os parâmetros comuns entre os métodos implementados. 
@@ -30,9 +30,20 @@ def get_base_parser():
     parser.add_argument('-o', '--output-file', metavar = 'OUTPUT_FILE', type = str, default = 'results.csv', 
         help = 'Output file name. Default: results.csv')
     return parser
-
+def cleaner(dataset):
+    
+    print(colored("APPLYING DATA CLEANER...", 'blue', attrs=['bold']))
+    for col in dataset.columns:
+        if len(dataset[col].unique()) == 0:
+            dataset.drop(col,inplace=True,axis=1)
+    
+    dataset.drop_duplicates(keep='first')
+            
+    return dataset
+    
 def get_dataset(parsed_args):
     dataset = pd.read_csv(parsed_args.dataset, sep=parsed_args.sep)
+    
     n_samples = parsed_args.n_samples
     if(n_samples):
         if(n_samples <= 0 or n_samples > dataset.shape[0]):
@@ -46,3 +57,7 @@ def get_X_y(parsed_args, dataset):
     X = dataset.drop(columns = parsed_args.class_column)
     y = dataset[parsed_args.class_column]
     return X, y
+
+def get_filename(output_file, prefix='', suffix='', extension='.csv'):
+    names = [prefix, output_file.replace(extension, ''), suffix]
+    return '_'.join(filter(None, names)) + extension
