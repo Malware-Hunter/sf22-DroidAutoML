@@ -143,15 +143,13 @@ def cleaner(dataset):
     for col in dataset_df.columns:
         if len(dataset_df[col].unique()) == 0:
             dataset_df.drop(col,inplace=True,axis=1)
-        elif len(dataset_df.columns)>1:
-            dataset_df.drop(col,inplace=True,axis=1)
-
+        
     print("Removing duplicates values")
     dataset_df=dataset_df.drop_duplicates(keep='first')
-    dataset_df = dataset_df.loc[:, (dataset_df > 1).any(axis=0)]
+   
     print("Removing NaN and Null values")
     dataset_df.dropna(axis=1)
-    print("There is non-binary data?->",len(dataset_df.columns)>1)
+   
     print("There is NaN data?->",dataset_df.isna().values.any())
     print("There is null data?->",dataset_df.isnull().values.any())
     
