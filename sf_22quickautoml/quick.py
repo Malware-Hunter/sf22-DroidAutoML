@@ -32,7 +32,7 @@ def parse_args(argv):
     pos_opt.add_argument("--help", action="store_true", default=False, help="Show usage parameters")
     pos_opt.add_argument("--dataset", metavar="", help="dataset (e.g. datasets/DrebinDatasetPermissoes.csv)")
     pos_opt.add_argument(
-        '--use-select-features', metavar='FEATURE TYPE: permissions or api-calls or jowmdroid',
+        '--use-select-features', metavar='FEATURE TYPE: permissions or api-calls or mult-features',
         help="--use-select-features permissions",
         choices=['permissions', 'api-calls', 'mult-features'], type = str)
 
