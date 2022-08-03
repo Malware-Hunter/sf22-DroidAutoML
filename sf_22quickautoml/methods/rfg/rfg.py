@@ -62,7 +62,7 @@ def run_experiment(X, y, classifiers, is_feature_selection_only = False,
                 X_selected_sorted = X_selected.loc[:, list(feature_scores_sorted['features'])]
                 X_selected_sorted['class'] = y
                 feature_rankings[score_function.__name__] = X_selected_sorted
-                if(X_selected.shape[1] == 1):
+                if(X_selected.shape[1] < 5):
                     print("AVISO: 0 features selecionadas")
             if(is_feature_selection_only):
                 continue
@@ -87,10 +87,10 @@ def run_experiment(X, y, classifiers, is_feature_selection_only = False,
                                     'f-measure': report['macro avg']['f1-score']
                                 })
                 fold += 1
-            
+    print("TESTE.....",results)
     return pd.DataFrame(results), feature_rankings
 
-def get_best_result(results, threshold=0.95):
+def get_best_result(results, threshold =0.65):
     averages = results.groupby(['k','score_function']).mean().drop(columns=['n_fold'])
     maximun_score = max(averages.max())
 

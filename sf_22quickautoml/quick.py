@@ -1,3 +1,4 @@
+from msilib.schema import Error
 from quickautoml.main import make_classifier
 
 from sklearn.metrics import *
@@ -8,6 +9,7 @@ from os.path import exists, basename
 import sys
 from datetime import datetime
 
+from lib.Log import *
 import argparse
 import methods.datacleaner as cleaner
 import methods.sigpid.sigpid_main as sigpid
@@ -136,7 +138,9 @@ Nota:
 
 def cleaner(dataset):
     start_time = timeit.default_timer() 
-    print(colored("APPLYING DATA CLEANER...", 'blue', attrs=['bold']))
+   
+    Log.info("APPLYING DATA CLEANER....")
+    #print(colored("APPLYING DATA CLEANER...", 'blue', attrs=['bold']))
     dataset_df = pd.read_csv(dataset, encoding='utf8')
     print("Dataset Size: ",dataset_df.shape)
     print("Removing irrelevant columns")
@@ -144,8 +148,8 @@ def cleaner(dataset):
         if len(dataset_df[col].unique()) == 0:
             dataset_df.drop(col,inplace=True,axis=1)
         
-    print("Removing duplicates values")
-    dataset_df=dataset_df.drop_duplicates(keep='first')
+    #print("Removing duplicates values")
+    #dataset_df=dataset_df.drop_duplicates(keep='first')
    
     print("Removing NaN and Null values")
     dataset_df.dropna(axis=1)
@@ -156,12 +160,12 @@ def cleaner(dataset):
     dataset_df.shape
     m, s = divmod(timeit.default_timer() - start_time, 60)
     h, m = divmod(m, 60)
-    time_str = "%02d:%02d:%02d" % (h, m, s)
-    print("Elapsed Time: ",time_str)     
+    time_str_cleaner = "%02d:%02d:%02d" % (h, m, s)
+    print("Elapsed Time: ",time_str_cleaner)     
     return dataset_df 
 if __name__ == "__main__":
     getopt = parse_args(sys.argv[1:])
-    start_time = timeit.default_timer() 
+    start_time_geral = timeit.default_timer() 
     if getopt.about:
         show_about()
         exit(1)
@@ -178,33 +182,33 @@ if __name__ == "__main__":
         
         
     except BaseException as e:
-        print('Exception: {}'.format(e))
+        Log.high("Error", e)
         exit(1)
-
+    start_time = timeit.default_timer() 
     if getopt.use_select_features == 'permissions':
-        print(colored("APPLYING FEATURE SELECTION IN PERMISSIONS...", 'blue', attrs=['bold']))
+        Log.info("APPLYING FEATURE SELECTION IN PERMISSIONS...")
         dataset_df = sigpid.run(getopt)
         m, s = divmod(timeit.default_timer() - start_time, 60)
         h, m = divmod(m, 60)
-        time_str = "%02d:%02d:%02d" % (h, m, s)
-        print("Elapsed Time: ",time_str)
+        time_str_features = "%02d:%02d:%02d" % (h, m, s)
+        print("Elapsed Time: ",time_str_features)
     elif getopt.use_select_features == 'api-calls':
-        print(colored("APPLYING FEATURE SELECTION IN API_CALLS...", 'blue', attrs=['bold']))
+        Log.info("APPLYING FEATURE SELECTION IN API_CALLS...")
         dataset_df = rfg.rfg(getopt)
         m, s = divmod(timeit.default_timer() - start_time, 60)
         h, m = divmod(m, 60)
-        time_str = "%02d:%02d:%02d" % (h, m, s)
-        print("Elapsed Time: ",time_str)
+        time_str_features = "%02d:%02d:%02d" % (h, m, s)
+        print("Elapsed Time: ",time_str_features)
     elif getopt.use_select_features == 'mult-features':
-        print(colored("APPLYING FEATURE SELECTION IN JOWMDROID...", 'blue', attrs=['bold']))
+        Log.info("APPLYING FEATURE SELECTION IN JOWMDROID...")
         dataset_df = jowmdroid.jowmdroid(getopt)
         m, s = divmod(timeit.default_timer() - start_time, 60)
         h, m = divmod(m, 60)
-        time_str = "%02d:%02d:%02d" % (h, m, s)
-        print("Elapsed Time: ",time_str)
+        time_str_features = "%02d:%02d:%02d" % (h, m, s)
+        print("Elapsed Time: ",time_str_features)
         
 
-    print(colored("SELECTING BEST ALGORITHMS AND HYPERPARAMS OPTIMIZER...", 'blue', attrs=['bold']))
+    Log.info("SELECTING BEST ALGORITHMS AND HYPERPARAMS OPTIMIZER...")
     start_time = timeit.default_timer()
     estimator = make_classifier()
     print("Dataset Size",dataset_df.shape)
@@ -216,16 +220,20 @@ if __name__ == "__main__":
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
 
     estimator.fit(X_train, y_train)
-    print(colored("BEST MODEL", 'blue', attrs=['bold']))
+    Log.info("BEST MODEL")
     print(estimator.best_model)
     predictions = estimator.predict(X_test)
-    print(colored("BEST MODEL CREATED SUCCESSFULLY IN PKL FILE.", 'blue', attrs=['bold']))
+    Log.info("BEST MODEL CREATED SUCCESSFULLY IN PKL FILE.")
     pickle.dump(estimator, open(f"{getopt.output_model}_trained_{get_current_datetime()}_{dataset_name}.pkl", 'wb'))
    
     m, s = divmod(timeit.default_timer() - start_time, 60)
     h, m = divmod(m, 60)
-    time_str = "%02d:%02d:%02d" % (h, m, s)
-
+    time_str_model = "%02d:%02d:%02d" % (h, m, s)
+ 
+    m, s = divmod(timeit.default_timer() - start_time_geral, 60)
+    h, m = divmod(m, 60)
+    time_str_geral = "%02d:%02d:%02d" % (h, m, s)
+    
     pd.DataFrame({
         "best_model": estimator.best_model,
         "accuracy": accuracy_score(y_test, predictions),
@@ -233,5 +241,5 @@ if __name__ == "__main__":
         "recall": recall_score(y_test, predictions),
         "f1_score": f1_score(y_test, predictions),
         "dataset" : dataset_name,
-        "execution_time" : time_str
+        "execution_time" : time_str_geral
     }, index=[0]).to_csv(f"{getopt.output_results}_quickautoml_{get_current_datetime()}_{dataset_name}", index=False)

@@ -114,14 +114,15 @@ def rfg(args):
     )
 
     if(not parsed_args.feature_selection_only):
-        results.to_csv(parsed_args.output_file, index=False)
+        results.to_csv(parsed_args.output_rfg, index=False)
+    
     for best_feature in best_features:
         k = best_feature['k']
         score_function = best_feature['score_function']
-        file_name = f"top_{k}_features_with_{score_function}_{parsed_args.output_file}.csv"
+        file_name = f"top_{k}_features_with_{score_function}_{parsed_args.output_rfg}.csv"
         best_feature['selected_dataset'].to_csv(file_name, index=False)
     print("done")
-
+    return best_feature['selected_dataset']
     exit(0)
 
 if __name__ == '__main__':

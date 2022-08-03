@@ -7,10 +7,12 @@ from numpy import mean, ndarray
 
 from quickautoml.protocols import VerboseLevels
 from quickautoml.entities import NaiveModel, FittedModel, Hyperparameter, HyperparamsOptimizer
-
+from datetime import datetime
+import timeit
 
 class OptunaHyperparamsOptimizer(HyperparamsOptimizer):
- 
+  
+  #print("HyperparamsOptimizer")
   def __init__(self, scoring: str):
     super().__init__(scoring)
 
@@ -28,7 +30,7 @@ class OptunaHyperparamsOptimizer(HyperparamsOptimizer):
           model_settings: List[Hyperparameter]) -> FittedModel:
     if self.verbose == VerboseLevels.DISABLED.value:
       set_verbosity(WARNING)
-
+    start_time = timeit.default_timer() 
     def objective(trial: Trial) -> float:
       optimizations = {}
       for hyperparameter in model_settings:
@@ -47,6 +49,14 @@ class OptunaHyperparamsOptimizer(HyperparamsOptimizer):
                          )
     study.optimize(objective, n_trials=100)
     best_model = naive_model.estimator.set_params(**study.best_params)
+    #print("Optuna")
+    print(best_model)
+    #print(naive_model.name)
+    print(study.best_value)
+    m, s = divmod(timeit.default_timer() - start_time, 60)
+    h, m = divmod(m, 60)
+    time_str = "%02d:%02d:%02d" % (h, m, s)
+    print("Elapsed Time: ",time_str)  
     return FittedModel(
       name=naive_model.name,
       cv_score=study.best_value,
@@ -70,7 +80,10 @@ class GridSearchHyperparamsOptimizer(HyperparamsOptimizer):
                                n_jobs=self.n_jobs,
                                scoring=self.scoring)
     grid_search.fit(x, y)
-
+    print("Grid Search")
+    print(grid_search.best_estimator_)
+    print(grid_search.best_score_)
+    print(grid_search.best_estimator_)
     return FittedModel(
       name=grid_search.best_estimator_.__str__(),
       cv_score=grid_search.best_score_,

@@ -12,7 +12,7 @@ from mlxtend.frequent_patterns import apriori, association_rules
 from mlxtend.preprocessing import TransactionEncoder
 from methods.sigpid.spinner import Spinner
 from methods.utils import get_base_parser, get_dataset
-
+from halo import Halo
 
 #B = None
 #M = None
@@ -95,8 +95,8 @@ def run_PMAR(dataset, prnr_malware, class_column):
     features_dataset = dataset.drop([class_column], axis=1)
     num_apk = features_dataset.shape[0] - 1
     num_features = features_dataset.shape[1]
-
-    spn = Spinner("Mining Association Rules")
+    Spinner = Halo(text='Loading 3-level', spinner='dots')
+    spn = Spinner
     spn.start()
     records = []
     for i in range(0,num_apk):
@@ -133,7 +133,7 @@ def run_PMAR(dataset, prnr_malware, class_column):
         #print(ant, rank_ant, con, rank_con)
         to_delete = ant if rank_ant < rank_con else con
         if to_delete not in deleted_ft:
-            print(to_delete)
+            #print(to_delete)
             PMAR_df = PMAR_df.drop([to_delete], axis=1)
             deleted_ft.append(to_delete)
 
@@ -195,8 +195,8 @@ def run(args):
     malwares_permissions = permission_list("MLDP/PRNR/PRNR_M_List.csv", False)
 
     num_permissions = dataset.shape[1] - 1 #CLASS
-
-    spn = Spinner('PRNR Generating Subset of Permissions')
+    Spinner = Halo(text='Loading 1-level', spinner='dots')
+    spn = Spinner
     spn.start()
     counter = increment = 3
     while counter < num_permissions/2 + increment:
@@ -222,8 +222,8 @@ def run(args):
         f_writer = csv.writer(f)
         while counter < num_permissions + increment:
             evaluated_ft = num_permissions if counter > num_permissions else counter
-            txt = "Running PIS + PRNR With {} Features".format(evaluated_ft)
-            spn = Spinner(txt)
+            #txt = "Running PIS + PRNR With {} Features".format(evaluated_ft)
+            #spn = Spinner(txt)
             spn.start()
             dataset_df = pd.read_csv('MLDP/PRNR/subset_' + str(evaluated_ft) + '.csv', encoding = 'utf8')
             results = list(SVM(dataset_df, args.class_column))
@@ -234,7 +234,7 @@ def run(args):
             spn.stop()
             counter += increment
     #spn.stop()
-    print("PRNR:", best_PRNR_counter, "Permissions", ">>", "Accuracy ({:.3f})".format(best_PRNR_accuracy))
+    print("1-level", best_PRNR_counter, "Permissions", ">>", "Accuracy ({:.3f})".format(best_PRNR_accuracy))
 
     #Plot PIS + PRNR
     plot_results("PRNR", "Best Accuracy", best_PRNR_counter, best_PRNR_accuracy)
@@ -246,7 +246,8 @@ def run(args):
     #calculates the support of each permission
     supp = PRNR_df.sum(axis = 0)
     supp = supp.sort_values(ascending=False)
-    spn = Spinner('SPR Generating Subset of Permissions')
+    Spinner = Halo(text='Loading 2-level', spinner='dots')
+    spn = Spinner
     spn.start()
     counter = increment = 5
     while counter < best_PRNR_counter + increment:
@@ -269,8 +270,8 @@ def run(args):
         f_writer = csv.writer(f)
         while counter < best_PRNR_counter + increment:
             evaluated_ft = best_PRNR_counter if counter > best_PRNR_counter else counter
-            txt = "Running PIS + SPR With {} Features".format(evaluated_ft)
-            spn = Spinner(txt)
+            #txt = "Running PIS + SPR With {} Features".format(evaluated_ft)
+            #spn = Spinner(txt)
             spn.start()
             dataset_df = pd.read_csv('MLDP/SPR/subset_' + str(evaluated_ft) + '.csv', encoding = 'utf8')
             results = list(SVM(dataset_df, args.class_column))
@@ -281,7 +282,7 @@ def run(args):
             spn.stop()
             counter += increment
     #spn.stop()
-    print("SPR:", best_SPR_counter, "Permissions", ">>", "Accuracy ({:.3f})".format(best_SPR_accuracy))
+    print("2-level", best_SPR_counter, "Permissions", ">>", "Accuracy ({:.3f})".format(best_SPR_accuracy))
 
     #Plot PIS + SPR
     plot_results("SPR", "Pruning Point", best_SPR_counter, best_SPR_accuracy)
@@ -295,7 +296,7 @@ def run(args):
     final_perms = len(final_dataset.columns) - 1
     num_permissions = initial_dataset.shape[1] - 1
     pct = (1.0 - (final_perms/num_permissions)) * 100.0
-    print(num_permissions, "to", final_perms, "Permissions. Reduction of {:.3f}%".format(pct))
+    print("3-level",num_permissions, "to", final_perms, "Permissions. Reduction of {:.3f}%".format(pct))
 
     return final_dataset
 

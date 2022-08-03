@@ -3,6 +3,7 @@ setup.py
 quickautoml/__init__.py
 quickautoml/adapters.py
 quickautoml/colors.py
+quickautoml/data_cleaner.py
 quickautoml/entities.py
 quickautoml/estimators.py
 quickautoml/exceptions.py
@@ -11,6 +12,7 @@ quickautoml/hyperparameter_optimizer.py
 quickautoml/main.py
 quickautoml/preprocessors.py
 quickautoml/protocols.py
+quickautoml/quick_main.py
 quickautoml/reports.py
 quickautoml/utils.py
 quickautoml.egg-info/PKG-INFO
