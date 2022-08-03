@@ -87,10 +87,10 @@ def run_experiment(X, y, classifiers, is_feature_selection_only = False,
                                     'f-measure': report['macro avg']['f1-score']
                                 })
                 fold += 1
-    print("TESTE.....",results)
+    
     return pd.DataFrame(results), feature_rankings
 
-def get_best_result(results, threshold =0.65):
+def get_best_result(results, threshold =95):
     averages = results.groupby(['k','score_function']).mean().drop(columns=['n_fold'])
     maximun_score = max(averages.max())
 
