@@ -14,7 +14,7 @@ import argparse
 import sys
 import inspect
 from methods.utils import get_base_parser, get_dataset, get_X_y
-
+from halo import Halo
 def parse_args():
     parser = argparse.ArgumentParser(parents=[get_base_parser()])
     parser.add_argument('--exclude-hyperparameter', action='store_true',
@@ -174,6 +174,7 @@ def inspect_frame(frame):
         print(f'{i} = {values[i]}')
 
 #if __name__ == "__main__":
+@Halo(text='Loading the best features', spinner='dots')
 def jowmdroid(args):    
     parsed_args = args
     #parsed_args = parse_args()
