@@ -139,10 +139,12 @@ Nota:
 def cleaner(dataset):
     start_time = timeit.default_timer() 
    
-    Log.info("APPLYING DATA CLEANER....")
+    Log.info("STAGE 1: DATA CLEANING ...")
     #print(colored("APPLYING DATA CLEANER...", 'blue', attrs=['bold']))
     dataset_df = pd.read_csv(dataset, encoding='utf8')
-    print("Dataset Size: ",dataset_df.shape)
+    linhas = dataset_df.shape[0]
+    colunas= dataset_df.shape[1]-1
+    print("Dataset Size: ",linhas,",",colunas)
     print("Removing irrelevant columns")
     for col in dataset_df.columns:
         if len(dataset_df[col].unique()) == 0:
@@ -186,21 +188,21 @@ if __name__ == "__main__":
         exit(1)
     start_time = timeit.default_timer() 
     if getopt.use_select_features == 'permissions':
-        Log.info("APPLYING FEATURE SELECTION IN PERMISSIONS...")
+        Log.info("STAGE 2: FEATURE ENGINEERING (FEATURE SELECTION - PERMISSIONS)")
         dataset_df = sigpid.run(getopt)
         m, s = divmod(timeit.default_timer() - start_time, 60)
         h, m = divmod(m, 60)
         time_str_features = "%02d:%02d:%02d" % (h, m, s)
         print("Elapsed Time: ",time_str_features)
     elif getopt.use_select_features == 'api-calls':
-        Log.info("APPLYING FEATURE SELECTION IN API_CALLS...")
+        Log.info("STAGE 2: FEATURE ENGINEERING (FEATURE SELECTION - API_CALLS)")
         dataset_df = rfg.rfg(getopt)
         m, s = divmod(timeit.default_timer() - start_time, 60)
         h, m = divmod(m, 60)
         time_str_features = "%02d:%02d:%02d" % (h, m, s)
         print("Elapsed Time: ",time_str_features)
     elif getopt.use_select_features == 'mult-features':
-        Log.info("APPLYING FEATURE SELECTION IN JOWMDROID...")
+        Log.info("STAGE 2: FEATURE ENGINEERING (FEATURE SELECTION - MULT-FEATURES)")
         dataset_df = jowmdroid.jowmdroid(getopt)
         m, s = divmod(timeit.default_timer() - start_time, 60)
         h, m = divmod(m, 60)
@@ -208,10 +210,12 @@ if __name__ == "__main__":
         print("Elapsed Time: ",time_str_features)
         
 
-    Log.info("SELECTING BEST ALGORITHMS AND HYPERPARAMS OPTIMIZER...")
+    Log.info("STAGE 3: SELECTING ALGORITHMS AND OPTIMIZING HYPER-PARAMETERS")
     start_time = timeit.default_timer()
     estimator = make_classifier()
-    print("Dataset Size",dataset_df.shape)
+    selected_linhas = dataset_df.shape[0]
+    selected_colunas= dataset_df.shape[1]-1
+    print("Dataset Size: ",selected_linhas,",",selected_colunas)
     data = estimator.prepare_data(dataset_df)
 
     y = data[getopt.class_column]
@@ -220,10 +224,11 @@ if __name__ == "__main__":
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
 
     estimator.fit(X_train, y_train)
-    Log.info("BEST MODEL")
+    Log.info("STATE 4: EVALUATION AND BEST MODEL SELECTION")
     print(estimator.best_model)
     predictions = estimator.predict(X_test)
-    Log.info("BEST MODEL CREATED SUCCESSFULLY IN PKL FILE.")
+    print(f"{getopt.output_model}_trained_{get_current_datetime()}_{dataset_name}.pkl")
+    #Log.info("BEST MODEL CREATED SUCCESSFULLY IN PKL FILE.")
     pickle.dump(estimator, open(f"{getopt.output_model}_trained_{get_current_datetime()}_{dataset_name}.pkl", 'wb'))
    
     m, s = divmod(timeit.default_timer() - start_time, 60)

@@ -52,7 +52,7 @@ class OptunaHyperparamsOptimizer(HyperparamsOptimizer):
     #print("Optuna")
     print(best_model)
     #print(naive_model.name)
-    print(study.best_value)
+    print("Accuracy =",study.best_value)
     m, s = divmod(timeit.default_timer() - start_time, 60)
     h, m = divmod(m, 60)
     time_str = "%02d:%02d:%02d" % (h, m, s)

@@ -195,7 +195,7 @@ def run(args):
     malwares_permissions = permission_list("MLDP/PRNR/PRNR_M_List.csv", False)
 
     num_permissions = dataset.shape[1] - 1 #CLASS
-    Spinner = Halo(text='Loading 1-level', spinner='dots')
+    Spinner = Halo(text='[SigPID] Level 1: ...', spinner='dots')
     spn = Spinner
     spn.start()
     counter = increment = 3
@@ -234,7 +234,7 @@ def run(args):
             spn.stop()
             counter += increment
     #spn.stop()
-    print("1-level", best_PRNR_counter, "Permissions", ">>", "Accuracy ({:.3f})".format(best_PRNR_accuracy))
+    print("[SigPID] Level 1: ...\nNumber of features selected =", best_PRNR_counter)
 
     #Plot PIS + PRNR
     plot_results("PRNR", "Best Accuracy", best_PRNR_counter, best_PRNR_accuracy)
@@ -246,7 +246,7 @@ def run(args):
     #calculates the support of each permission
     supp = PRNR_df.sum(axis = 0)
     supp = supp.sort_values(ascending=False)
-    Spinner = Halo(text='Loading 2-level', spinner='dots')
+    Spinner = Halo(text='[SigPID] Level 2: ...', spinner='dots')
     spn = Spinner
     spn.start()
     counter = increment = 5
@@ -282,7 +282,7 @@ def run(args):
             spn.stop()
             counter += increment
     #spn.stop()
-    print("2-level", best_SPR_counter, "Permissions", ">>", "Accuracy ({:.3f})".format(best_SPR_accuracy))
+    print("[SigPID] Level 2: ...\nNumber of features selected =", best_SPR_counter)
 
     #Plot PIS + SPR
     plot_results("SPR", "Pruning Point", best_SPR_counter, best_SPR_accuracy)
@@ -296,7 +296,7 @@ def run(args):
     final_perms = len(final_dataset.columns) - 1
     num_permissions = initial_dataset.shape[1] - 1
     pct = (1.0 - (final_perms/num_permissions)) * 100.0
-    print("3-level",num_permissions, "to", final_perms, "Permissions. Reduction of {:.3f}%".format(pct))
+    print("[SigPID] Level 3: ...\n",num_permissions, "to", final_perms, "Permissions. Reduction of {:.3f}%".format(pct))
 
     return final_dataset
 
