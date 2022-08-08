@@ -16,17 +16,19 @@ A DroidAutoML também implementa níveis de personalização, transparência, in
 **Etapa 2**: na **engenharia de características**, a principal tarefa é identificar aquelas características mais relevantes para o domínio do problema, utilizando métodos sofistidados de seleção de características; 
 
 Métodos atualmente disponíveis:
-- SigPID: especializado em permissões
-- RFG: especializado em chamadas de API
-- JOWMDroid: diversos tipos de características
+- [SigPID](https://ieeexplore.ieee.org/document/7888730): especializado em permissões
+- [RFG](https://www.mdpi.com/2079-9292/9/3/435): especializado em chamadas de API
+- [JOWMDroid](https://www.sciencedirect.com/science/article/pii/S016740482030359X): diversos tipos de características
 
 **Etapa 3**: na **seleção de modelos**, a ferramenta recebe um subconjunto reduzido de características da etapa anterior e aplica sobre 3 algoritmos de aprendizado de máquina :
-- K-Nearest Neighbor(KNN)
-- Random forest
-- AdaBoost
+- [K-Nearest Neighbor(KNN)](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm)
+- [Random forest](https://en.wikipedia.org/wiki/Random_forest)
+- [AdaBoost](https://en.wikipedia.org/wiki/AdaBoost)
 
 **Etapa 4**: por fim ocorre o **ajuste do modelo** onde os algoritmos da etapa anterior são otimizados com hiper-parâmetros e avaliado selecionando melhor modelo, ou seja, aquele que atingir a melhor acurácia.
-Como saída a ferramenta retorna **( a )** modelo treinado serializado no formato ".pkl"; **( b )** subconjunto reduzido de características; **( c )** relatório de desempenho do modelo contendo (melhor modelo e seus Hiper-parâmetros, Acurácia, Precisão, Recall, Medida-F e tempo de execução do pipeline completo).
+Como saída a ferramenta retorna **( a )** modelo treinado serializado no formato ".pkl"; **( b )** subconjunto reduzido de características; **( c )** relatório de desempenho do modelo contendo (melhor modelo e seus Hiper-parâmetros, Acurácia, Precisão, Recall, Medida-F e tempo de execução do pipeline completo). Os  hiper-parâmetros são ajustados a partir de dois métodos, a saber: 
+- [Grid search](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html)
+- [Optuna](https://github.com/optuna/optuna)
 
 ## Instalação 
 * Clonar o repositório
@@ -38,7 +40,21 @@ git clone https://github.com/Malware-Hunter/sf22_quickautoml.git
 cd sf22_quickautoml
 sh distribute.sh
 ```
-
+## Dependências
+- python3
+- sklearn==0.0
+- numpy~=1.22.3
+- pandas==1.3.4
+- matplotlib==3.5.0
+- optuna==2.10.0
+- mlxtend==0.19.0
+- termcolor==1.1.0
+- Halo==0.9.0
+## Possíveis erros de instalação e soluções
+- Erro de instalação de dependências  Ex: (*A new release of pip available: 22.1.2 -> 22.2.2*)
+	- Solução: ``` python3 -m pip install --upgrade pip```
+- *Import Error: No module named numpy* 
+	- Solução:``` python3 -m pip install numpy~=1.22.3```
 ## Parâmetros de entrada (opções de utilização)
 
 ```bash
