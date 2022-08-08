@@ -1,9 +1,40 @@
-# sf22_quickautoml
-sf22_quickautoml
+# Getting Started
+QuickAutoML é uma ferramenta para treinamento automatizado de modelos de machine learning. Com ela, é possível:
+- Selecionar automaticamente as melhores features para determinado conjunto de dados;
+- Encontrar automaticamente o melhor modelo para determinado conjunto de dados;
+- Gerar relatórios de métricas para cada algoritmo treinado;
 
-coisas a fazer: 
-- incluir pelo menos 2 métodos de seleção de características (e.g., 1 para permissoes e outro para chamadas de API)
-- executar a ferramentas em 5 datasets distintos 
-- comparar a ferramentas com outras (no mínimo 2)
-- discutir os resultados 
+## Como instalar
+* Clonar o repositório
+```bash
+git clone https://github.com/Malware-Hunter/sf22_quickautoml.git
+```
+* Instalar a biblioteca
+```bash
+cd sf22_quickautoml
+sh distribute.sh
+```
 
+## Como utilizar?
+
+```python
+Run in SigPID:
+python3 quick.py -d datasets/DrebinDatasetPermissoes.csv --use-select-features permissions
+Run in RFG:
+python3 quick.py -d datasets/drebin_215_api_calls_limpo.csv --use-select-features api-calls
+Run in Jowmdroid:
+python3 quick.py --dataset datasets/DrebinDatasetPermissoes.csv --use-select-features mult-features
+```
+## Outras opções de uso
+```bash
+Opções:
+  --about               retorna informações do desenvolvedor
+  --help                exibe as opções de parâmetros de entrada
+  --dataset             dataset (e.g. datasets/DrebinDatasetPermissoes.csv)
+  --use-select-features seleção de características (e.g., permissions, api-calls, mult-features )                       
+  --sep                 separador usado no dataset por padrão ","
+  --class-column        nome da coluna que determina a classificação do aplicativo por padrão "class"
+  --output-results      saída para o arquivo de métricas da ferramenta (e.g. acuracy, recall,time) padrão "quick_results.csv"
+  --output-model        saída para o modelo treinado e serializado formato .pkl padrão "model_serializable.pkl"
+
+```

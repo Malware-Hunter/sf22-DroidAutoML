@@ -1,7 +1,0 @@
-sklearn
-numpy
-pandas
-matplotlib
-optuna
-mlxtend
-termcolor
