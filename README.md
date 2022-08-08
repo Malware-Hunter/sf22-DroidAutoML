@@ -4,6 +4,8 @@ DroidAutoML é uma ferramenta de AutoML de domínio específico que abstrai a ex
 
 A DroidAutoML também implementa níveis de personalização, transparência, interpretabilidade e depuração que não são comuns nas ferramentas de AutoML de proposito geral, que funcionam essencialmente como "caixas pretas" (e.g., apenas apresentação das métricas finais aos usuários).
 
+## O pipeline de AutoML
+
 ![O pipeline da DroidAutoML](https://gcdnb.pbrd.co/images/ZLQfWKF12ZN5.png?o=1)
 
 **Etapa 1**: o **pré-processamento dos dados** trata valores ruidosos com:
