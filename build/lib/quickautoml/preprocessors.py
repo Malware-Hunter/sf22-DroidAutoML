@@ -3,7 +3,7 @@ from typing import Union
 from numpy import ndarray, array
 from pandas import DataFrame
 
-from quickautoml.entities import DataPreprocessor
+from droidautoml.entities import DataPreprocessor
 
 
 class PandasDataPreprocessor(DataPreprocessor):

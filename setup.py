@@ -1,14 +1,14 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='quickautoml',
+    name='droidautoml',
     version='1.0.0',
     author='Wabbajack',
-    packages=find_packages(include=['quickautoml']),
-    description='Quick tests for supervised machine learning entities',
+    packages=find_packages(include=['droidautoml']),
+    description='Droidautoml tests for supervised machine learning entities',
     license='MIT',
     install_requires=[
-        'sklearn', 'numpy', 'pandas', 'matplotlib', 'optuna', 'mlxtend', 'termcolor', 'Halo'
+        'sklearn', 'numpy', 'pandas', 'matplotlib', 'optuna', 'mlxtend', 'termcolor', 'halo'
     ],
     test_suite='tests'
 )

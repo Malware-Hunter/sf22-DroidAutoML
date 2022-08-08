@@ -2,13 +2,13 @@ from typing import Dict, List
 
 from sklearn.model_selection import train_test_split
 
-from quickautoml.exceptions import InvalidParamException, ModelNotFittedException
-from quickautoml.adapters import ModelsSupplier
-from quickautoml.reports import BarplotReport, CsvReport, JsonReport
-from quickautoml.preprocessors import DataPreprocessor
-from quickautoml.entities import NaiveModel, FittedModel, TrainingConfig, Hyperparameter, FeatureEngineer, \
+from droidautoml.exceptions import InvalidParamException, ModelNotFittedException
+from droidautoml.adapters import ModelsSupplier
+from droidautoml.reports import BarplotReport, CsvReport, JsonReport
+from droidautoml.preprocessors import DataPreprocessor
+from droidautoml.entities import NaiveModel, FittedModel, TrainingConfig, Hyperparameter, FeatureEngineer, \
                                  HyperparamsOptimizer
-from quickautoml.protocols import ClassifierDefaults
+from droidautoml.protocols import ClassifierDefaults
 
 
 class Classifier:

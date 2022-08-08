@@ -1,4 +1,4 @@
-from quickautoml.main import make_classifier
+from droidautoml.main import make_classifier
 from sklearn.metrics import *
 from sklearn.model_selection import train_test_split
 import pandas as pd

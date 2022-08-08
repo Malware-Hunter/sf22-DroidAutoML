@@ -5,8 +5,8 @@ from optuna.logging import set_verbosity, WARNING
 from sklearn.model_selection import GridSearchCV, cross_val_score
 from numpy import mean, ndarray
 
-from quickautoml.protocols import VerboseLevels
-from quickautoml.entities import NaiveModel, FittedModel, Hyperparameter, HyperparamsOptimizer
+from droidautoml.protocols import VerboseLevels
+from droidautoml.entities import NaiveModel, FittedModel, Hyperparameter, HyperparamsOptimizer
 from datetime import datetime
 import timeit
 

@@ -1,5 +1,5 @@
 
-from quickautoml.main import make_classifier
+from droidautoml.main import make_classifier
 
 from sklearn.metrics import *
 from sklearn.model_selection import train_test_split
@@ -45,7 +45,7 @@ def parse_args(argv):
         help = 'Name of the class column. Default: "class"')
     pos_opt.add_argument('--n-samples', type=int,
         help = 'Use a subset of n samples from the dataset. By default, all samples are used.')
-    pos_opt.add_argument('--output-results', metavar = 'OUTPUT_FILE', type = str, default = 'quick_results.csv',
+    pos_opt.add_argument('--output-results', metavar = 'OUTPUT_FILE', type = str, default = 'droidautoml_results.csv',
         help = 'Output metrics (e.g. acuracy, recall,time) Default: quick_results.csv')
     pos_opt.add_argument('--output-model', metavar = 'OUTPUT_FILE', type = str, default = 'model_serializable',
         help = 'Output model ML serializable. Default: model_serializable')
@@ -247,4 +247,4 @@ if __name__ == "__main__":
         "f1_score": f1_score(y_test, predictions),
         "dataset" : dataset_name,
         "execution_time" : time_str_geral
-    }, index=[0]).to_csv(f"{getopt.output_results}_quickautoml_{get_current_datetime()}_{dataset_name}", index=False)
+    }, index=[0]).to_csv(f"{getopt.output_results}_droidautoml_{get_current_datetime()}_{dataset_name}", index=False)

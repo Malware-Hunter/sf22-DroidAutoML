@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import List
 
-from quickautoml.entities import FeatureEngineer
+from droidautoml.entities import FeatureEngineer
 
 from pandas import DataFrame, Series
 

@@ -1,9 +1,9 @@
-from quickautoml.adapters import SKLearnModelsSupplier
-from quickautoml.estimators import Classifier
-from quickautoml.feature_engineering import PandasFeatureEngineer
-from quickautoml.hyperparameter_optimizer import OptunaHyperparamsOptimizer
-from quickautoml.preprocessors import PandasDataPreprocessor
-from quickautoml.entities import NaiveModel, Hyperparameter
+from droidautoml.adapters import SKLearnModelsSupplier
+from droidautoml.estimators import Classifier
+from droidautoml.feature_engineering import PandasFeatureEngineer
+from droidautoml.hyperparameter_optimizer import OptunaHyperparamsOptimizer
+from droidautoml.preprocessors import PandasDataPreprocessor
+from droidautoml.entities import NaiveModel, Hyperparameter
 #from quickautoml.methods.SigPID.sigpid import NaiveModel, Hyperparameter
 
 import pandas as pd

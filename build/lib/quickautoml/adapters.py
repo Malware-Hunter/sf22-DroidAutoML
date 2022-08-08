@@ -9,7 +9,7 @@ from sklearn.tree import DecisionTreeClassifier
 from numpy import ndarray
 from sklearn.metrics import accuracy_score, recall_score, precision_score, mean_squared_error, r2_score
 
-from quickautoml.protocols import Metrics
+from droidautoml.protocols import Metrics
 
 
 class ModelsSupplier(ABC):

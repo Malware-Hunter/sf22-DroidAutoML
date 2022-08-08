@@ -1,17 +1,17 @@
 import unittest
 
-from quickautoml.adapters import SKLearnModelsSupplier
-from quickautoml.entities import Hyperparameter, TrainingConfig
-from quickautoml.estimators import Classifier
-from quickautoml.colors import ConsoleColors
-from quickautoml.exceptions import InvalidParamException
-from quickautoml.estimators import NaiveModel
+from droidautoml.adapters import SKLearnModelsSupplier
+from droidautoml.entities import Hyperparameter, TrainingConfig
+from droidautoml.estimators import Classifier
+from droidautoml.colors import ConsoleColors
+from droidautoml.exceptions import InvalidParamException
+from droidautoml.estimators import NaiveModel
 
 
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 
-from quickautoml.hyperparameter_optimizer import OptunaHyperparamsOptimizer
+from droidautoml.hyperparameter_optimizer import OptunaHyperparamsOptimizer
 from tests.resources import LogisticRegressionStub
 
 

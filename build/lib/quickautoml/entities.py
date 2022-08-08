@@ -3,7 +3,7 @@ from abc import ABC
 from numpy import ndarray
 from pandas import DataFrame
 
-from quickautoml.protocols import HyperparamsOptimizerDefaults
+from droidautoml.protocols import HyperparamsOptimizerDefaults
 
 
 class TrainingConfig:

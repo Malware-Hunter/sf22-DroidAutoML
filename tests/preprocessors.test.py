@@ -3,8 +3,8 @@ from unittest import TestCase, main
 from numpy import array, nan, isnan, ndarray
 from pandas import DataFrame
 
-from quickautoml.colors import ConsoleColors
-from quickautoml.preprocessors import DataPreprocessor
+from droidautoml.colors import ConsoleColors
+from droidautoml.preprocessors import DataPreprocessor
 
 
 class PreprocessorsTestCase(TestCase):
