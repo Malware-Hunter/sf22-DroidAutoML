@@ -73,11 +73,11 @@ Opções:
 ## Exemplos de utilização
 
 ```python
-Run in SigPID:
+Executar sobre permissions:
 python3 droidautoml.py --dataset datasets/drebin_215_permissions.csv --use-select-features permissions
-Run in RFG:
+Executar sobre API_CALLs:
 python3 droidautoml.py --dataset datasets/drebin_215_api_calls.csv --use-select-features api-calls
-Run in Jowmdroid:
+Executar sobre Multiplas-características:
 python3 droidautoml.py --dataset datasets/drebin_all.csv --use-select-features mult-features
 ```
 
