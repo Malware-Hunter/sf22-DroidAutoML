@@ -20,9 +20,13 @@ Métodos atualmente disponíveis:
 - RFG: especializado em chamadas de API
 - JOWMDroid: diversos tipos de características
 
-**Etapa 3**: 
+**Etapa 3**: na **seleção de modelos**, a ferramenta recebe um subconjunto reduzido de características da etapa anterior e aplica sobre 3 algoritmos de aprendizado de máquina :
+- K-Nearest Neighbor(KNN)
+- Random forest
+- AdaBoost
 
-**Etapa 4**: 
+**Etapa 4**: por fim ocorre o **ajuste do modelo** onde os algoritmos da etapa anterior são otimizados com hiper-parâmetros e avaliado selecionando melhor modelo, ou seja, aquele que atingir a melhor acurácia.
+Como saída a ferramenta retorna **( a )** modelo treinado serializado no formato ".pkl"; **( b )** subconjunto reduzido de características; **( c )** relatório de desempenho do modelo contendo (melhor modelo e seus Hiper-parâmetros, Acurácia, Precisão, Recall, Medida-F e tempo de execução do pipeline completo).
 
 ## Instalação 
 * Clonar o repositório
@@ -45,7 +49,7 @@ Opções:
   --use-select-features seleção de características (e.g., permissions, api-calls, mult-features )                       
   --sep                 separador usado no dataset por padrão ","
   --class-column        nome da coluna que determina a classificação do aplicativo por padrão "class"
-  --output-results      saída para o arquivo de métricas da ferramenta (e.g. acuracy, recall,time) padrão "quick_results.csv"
+  --output-results      saída para o arquivo de métricas da ferramenta (e.g. acuracy, recall,time) padrão "droidautoml_results.csv"
   --output-model        saída para o modelo treinado e serializado formato .pkl padrão "model_serializable.pkl"
 
 ```
@@ -54,15 +58,26 @@ Opções:
 
 ```python
 Run in SigPID:
-python3 quick.py -d datasets/DrebinDatasetPermissoes.csv --use-select-features permissions
+python3 droidautoml.py --dataset datasets/drebin_215_permissions.csv --use-select-features permissions
 Run in RFG:
-python3 quick.py -d datasets/drebin_215_api_calls_limpo.csv --use-select-features api-calls
+python3 droidautoml.py --dataset datasets/drebin_215_api_calls.csv --use-select-features api-calls
 Run in Jowmdroid:
-python3 quick.py --dataset datasets/DrebinDatasetPermissoes.csv --use-select-features mult-features
+python3 droidautoml.py --dataset datasets/drebin_all.csv --use-select-features mult-features
 ```
 
 ## Ambiente de testes
 
-A DroidAutoML foi instalar e testada nos seguintes ambientes:
+A DroidAutoML foi instalada e testada nos seguintes ambientes:
+- Notebook Intel(R) Core(TM) i7-1185G7 3.00GHz da
+geração 11.
+- Memória RAM de 32GB
+- Sistema operacional Microsoft Windows 10 64 bit. 
+
+Para a execução da ferramenta foi utilizada uma máquina
+virtual [VirtualBox](https://www.virtualbox.org/) Versão (6.1.26 r145957 - Qt5.6.2)  executando um Linux Ubuntu 20.04.3 LTS 64 bit.
+- kernel = 5.15.0-43-generic
+- GNOME = 42.0
+-  4 CPUs 
+- 16GB de RAM
 
 
