@@ -1,15 +1,7 @@
-FROM ubuntu:latest
-
-RUN apt-get update -y && \
-    apt-get install -y python3-pip python-dev build-essential
-
-COPY . /firecannon
-
-WORKDIR /firecannon
-
-COPY requirements.txt /firecannon/requirements.txt
-
-ENV PYTHONPATH="${PYTHONPATH}:."
-
-RUN pip install -r requirements.txt
-RUN python3 setup.py install
+FROM ubuntu:20.04 as base
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN DEBIAN_FRONTEND=noninteractive apt install wget vim python3-pip python-dev build-essential -y
+WORKDIR /sf22
+COPY . ./
+RUN ./setup.sh
