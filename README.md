@@ -50,7 +50,7 @@ Opções:
 
 ```
 
-## Exemplos de utilização:
+## Exemplos de utilização
 
 ```python
 Run in SigPID:
@@ -60,4 +60,9 @@ python3 quick.py -d datasets/drebin_215_api_calls_limpo.csv --use-select-feature
 Run in Jowmdroid:
 python3 quick.py --dataset datasets/DrebinDatasetPermissoes.csv --use-select-features mult-features
 ```
+
+## Ambiente de testes
+
+A DroidAutoML foi instalar e testada nos seguintes ambientes:
+
 
