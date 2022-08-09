@@ -25,10 +25,9 @@ warnings.filterwarnings("ignore")
 
 def parse_args(argv):
     parse = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter,
-                                    usage="python3 quick.py --dataset <Dataset> [opção]", add_help=False)
+                                    usage="python3 quick.py --dataset <Dataset> [opção]", add_help=True)
     pos_opt = parse.add_argument_group("Opções")
     pos_opt.add_argument("--about",action="store_true",help="Tool information")
-    pos_opt.add_argument("--help", action="store_true", default=False, help="Show usage parameters")
     pos_opt.add_argument("--dataset", metavar="", help="dataset (e.g. datasets/DrebinDatasetPermissoes.csv)")
     pos_opt.add_argument(
         '--use-select-features', metavar='FEATURE TYPE: permissions or api-calls or mult-features',
@@ -112,7 +111,7 @@ def parse_args(argv):
     try:
        getopt = parse.parse_args(argv)
     except:
-        parse.print_help()
+        #parse.print_help()
         sys.exit(1)
     return getopt
 
@@ -168,7 +167,8 @@ if __name__ == "__main__":
     except BaseException as e:
         Log.high("Error", e)
         exit(1)
-    start_time = timeit.default_timer() 
+    start_time = timeit.default_timer()
+    
     if getopt.use_select_features == 'permissions':
         Log.info("STAGE 2: FEATURE ENGINEERING (FEATURE SELECTION - PERMISSIONS)")
         dataset_df = sigpid.run(getopt)
