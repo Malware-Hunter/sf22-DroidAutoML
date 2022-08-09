@@ -23,10 +23,6 @@ import pickle
 import warnings
 warnings.filterwarnings("ignore")
 
-epilog = """
-Github: https://github.com/Malware-Hunter/sf22_quickautoml
-Versão: Pré-alfa
-"""
 def parse_args(argv):
     parse = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter,
                                     usage="python3 quick.py --dataset <Dataset> [opção]", add_help=False)
@@ -127,15 +123,7 @@ def get_current_datetime(format="%Y%m%d%H%M%S"):
     return datetime.now().strftime(format)
 
 def show_about():
-    print("""
-***************
-Projeto:
-Licença: Proprietário
-Autoria: Malware Hunter
-Ultima Autalização: 2022 jul 14
-Nota:
-****************
-""" + epilog)
+    print("")
 
 def cleaner(dataset):
     start_time = timeit.default_timer() 
