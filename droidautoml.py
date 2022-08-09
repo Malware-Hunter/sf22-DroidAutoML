@@ -123,7 +123,7 @@ def get_current_datetime(format="%Y%m%d%H%M%S"):
     return datetime.now().strftime(format)
 
 def show_about():
-    print("")
+    print("DrodAutoML v0.1")
 
 def cleaner(dataset):
     start_time = timeit.default_timer() 
