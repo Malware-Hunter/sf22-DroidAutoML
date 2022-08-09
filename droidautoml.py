@@ -116,9 +116,6 @@ def parse_args(argv):
         sys.exit(1)
     return getopt
 
-
-
-
 def get_current_datetime(format="%Y%m%d%H%M%S"):
     return datetime.now().strftime(format)
 
@@ -154,24 +151,20 @@ def cleaner(dataset):
     time_str_cleaner = "%02d:%02d:%02d" % (h, m, s)
     print("Elapsed Time: ",time_str_cleaner)     
     return dataset_df 
+
 if __name__ == "__main__":
     getopt = parse_args(sys.argv[1:])
     start_time_geral = timeit.default_timer() 
+    if len(sys.argv) < 2:
+        print ("Usage: " + sys.argv[0] + " -h")
+        exit(1)
     if getopt.about:
         show_about()
         exit(1)
-
-  
-
     try:
-        
         dataset_file_path = getopt.dataset
-        
         dataset_name = basename(dataset_file_path)
-            	
         dataset_df = cleaner(getopt.dataset)#pd.read_csv(dataset_file_path, encoding='utf8')
-        
-        
     except BaseException as e:
         Log.high("Error", e)
         exit(1)
