@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 
 from droidautoml.main import make_classifier
 
