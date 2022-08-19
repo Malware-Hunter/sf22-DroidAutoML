@@ -162,7 +162,11 @@ def cleaner(dataset, sep_tipe):
         return dataset_df 
     
 if __name__ == "__main__":
-    getopt = parse_args(sys.argv[1:])
+    try:
+        getopt = parse_args(sys.argv[1:])
+    except Exception as e:
+        print ("Usage: " + sys.argv[0] + " -h")
+        exit(1)
     start_time_geral = timeit.default_timer() 
     if len(sys.argv) < 2:
         print ("Usage: " + sys.argv[0] + " -h")
