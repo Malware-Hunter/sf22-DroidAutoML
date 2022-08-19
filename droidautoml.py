@@ -107,12 +107,14 @@ def parse_args(argv):
         help="If set, the experiment is constrained to the feature selection phase only.")
         
     print(colored(logo, 'green'))
-    
-    try:
-       getopt = parse.parse_args(argv)
-    except:
-        #parse.print_help()
-        sys.exit(1)
+
+    getopt = parse.parse_args(argv)
+    if not getopt.dataset.endswith ('.csv'):
+        print(colored("[Error] dataset must be a .csv file >> "+ getopt.dataset, 'red'))
+        exit()
+        #parse.error('File is not csv or  no such file: ' + getopt.dataset)
+
+
     return getopt
 
 def get_current_datetime(format="%Y%m%d%H%M%S"):
@@ -121,36 +123,44 @@ def get_current_datetime(format="%Y%m%d%H%M%S"):
 def show_about():
     print("DrodAutoML v0.1")
 
-def cleaner(dataset):
+def cleaner(dataset, sep_tipe):
     start_time = timeit.default_timer() 
    
     Log.info("STAGE 1: DATA CLEANING ...")
     #print(colored("APPLYING DATA CLEANER...", 'blue', attrs=['bold']))
-    dataset_df = pd.read_csv(dataset, encoding='utf8')
+    
+  
+    dataset_df = pd.read_csv(dataset, sep=str(sep_tipe), encoding='utf8')
+
     linhas = dataset_df.shape[0]
     colunas= dataset_df.shape[1]-1
-    print("Dataset Size: ",linhas,",",colunas)
-    print("Removing irrelevant columns")
-    for col in dataset_df.columns:
-        if len(dataset_df[col].unique()) == 0:
-            dataset_df.drop(col,inplace=True,axis=1)
+    if colunas==0:
+        print(colored("[Error] dataset must have at least one column >> "+ dataset, 'red'))
+    else:    
         
-    #print("Removing duplicates values")
-    #dataset_df=dataset_df.drop_duplicates(keep='first')
-   
-    print("Removing NaN and Null values")
-    dataset_df.dropna(axis=1)
-   
-    print("There is NaN data?->",dataset_df.isna().values.any())
-    print("There is null data?->",dataset_df.isnull().values.any())
-    
-    dataset_df.shape
-    m, s = divmod(timeit.default_timer() - start_time, 60)
-    h, m = divmod(m, 60)
-    time_str_cleaner = "%02d:%02d:%02d" % (h, m, s)
-    print("Elapsed Time: ",time_str_cleaner)     
-    return dataset_df 
+        print("Dataset Size: ",linhas,",",colunas)
+        print("Removing irrelevant columns")
+        for col in dataset_df.columns:
+            if len(dataset_df[col].unique()) == 0:
+                dataset_df.drop(col,inplace=True,axis=1)
+            
+        #print("Removing duplicates values")
+        #dataset_df=dataset_df.drop_duplicates(keep='first')
 
+        print("Removing NaN and Null values")
+        dataset_df.dropna(axis=1)
+
+        print("There is NaN data?->",dataset_df.isna().values.any())
+        print("There is null data?->",dataset_df.isnull().values.any())
+        
+        dataset_df.shape
+        m, s = divmod(timeit.default_timer() - start_time, 60)
+        h, m = divmod(m, 60)
+        time_str_cleaner = "%02d:%02d:%02d" % (h, m, s)
+        print("Elapsed Time: ",time_str_cleaner)
+        
+        return dataset_df 
+    
 if __name__ == "__main__":
     getopt = parse_args(sys.argv[1:])
     start_time_geral = timeit.default_timer() 
@@ -160,12 +170,15 @@ if __name__ == "__main__":
     if getopt.about:
         show_about()
         exit(1)
+    
+
     try:
         dataset_file_path = getopt.dataset
         dataset_name = basename(dataset_file_path)
-        dataset_df = cleaner(getopt.dataset)#pd.read_csv(dataset_file_path, encoding='utf8')
-    except BaseException as e:
-        Log.high("Error", e)
+
+        dataset_df = cleaner(getopt.dataset, getopt.sep)#pd.read_csv(dataset_file_path, encoding='utf8')
+    except Exception as e:
+        print(colored("[Error] no such file >> "+str(getopt.dataset), 'red'))
         exit(1)
     start_time = timeit.default_timer()
     

@@ -42,8 +42,11 @@ def cleaner(dataset):
     return dataset
     
 def get_dataset(parsed_args):
-    dataset = pd.read_csv(parsed_args.dataset, sep=parsed_args.sep)
-    
+    try:
+        dataset = pd.read_csv(parsed_args.dataset, sep=parsed_args.sep)
+    except Exception as e:
+        print(colored("[Error] delimiter parameter error or class columns: " +"'"+ str(parsed_args.class_column)+" or "+str(parsed_args.sep)+"'", 'red'))
+        exit()
     n_samples = parsed_args.n_samples
     if(n_samples):
         if(n_samples <= 0 or n_samples > dataset.shape[0]):
@@ -53,7 +56,9 @@ def get_dataset(parsed_args):
 
 def get_X_y(parsed_args, dataset):
     if(parsed_args.class_column not in dataset.columns):
-        raise Exception(f'Expected dataset {parsed_args.dataset} to have a class column named "{parsed_args.class_column}"')
+        #raise Exception(f'Expected dataset {parsed_args.dataset} to have a class column named "{parsed_args.class_column}"')
+        print(colored("[Error] delimiter parameter error or class columns: " +"'"+ str(parsed_args.class_column)+" or "+str(parsed_args.sep)+"'", 'red'))
+        exit()
     X = dataset.drop(columns = parsed_args.class_column)
     y = dataset[parsed_args.class_column]
     return X, y

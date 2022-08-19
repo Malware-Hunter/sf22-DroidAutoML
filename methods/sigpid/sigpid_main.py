@@ -13,7 +13,7 @@ from mlxtend.preprocessing import TransactionEncoder
 from methods.sigpid.spinner import Spinner
 from methods.utils import get_base_parser, get_dataset
 from halo import Halo
-
+from termcolor import colored
 #B = None
 #M = None
 
@@ -180,13 +180,14 @@ def run(args):
     #args = parse_args(dataset_name)
     try:
         initial_dataset = get_dataset(args)
-    except BaseException as e:
-        print('Exception: {}'.format(e))
+        dataset = drop_internet(initial_dataset)
+        B = dataset[(dataset[args.class_column] == 0)]
+        M = dataset[(dataset[args.class_column] == 1)]
+    except Exception as e:
+        print(colored("[Error] delimiter parameter error or class columns >> " +"'"+ str(args.class_column)+" or "+str(args.sep)+"'", 'red'))
         exit(1)
 
-    dataset = drop_internet(initial_dataset)
-    B = dataset[(dataset[args.class_column] == 0)]
-    M = dataset[(dataset[args.class_column] == 1)]
+    
 
     calculate_PRNR(B, "MLDP/PRNR/PRNR_B_List.csv", args.class_column)
     calculate_PRNR(M, "MLDP/PRNR/PRNR_M_List.csv", args.class_column)
